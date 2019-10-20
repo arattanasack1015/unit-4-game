@@ -34,6 +34,7 @@ gameData = {
 
     
 characters = [
+//Kaneki Stats
 {
     name: "kaneki",
     alias: "eyepatch",
@@ -97,6 +98,7 @@ characters = [
     evadeStat: 70, 
 },
 
+//Touka Stats
 {
     name: "touka",
     alias: "rabbit",
@@ -157,6 +159,7 @@ characters = [
     evadeStat: 90,
 },
 
+//Jason Stats
 {
     name: "yamori",
     alias: "jason",
@@ -220,4 +223,128 @@ characters = [
     evadeStat: 30, 
 },
 
+//Ayato Stats
+{
+    name: "ayato",
+    alias: "black rabbit",
+    kaguneType: ["ukaku"],
+    countertype: ["kouhaku"],
+    img: {
+        default: "https://vignette.wikia.nocookie.net/tokyoghoul/images/b/bd/Ayato_anime_design_front_view.png/revision/latest/scale-to-width-down/300?cb=20150209220017",
+
+        kagune: "https://www.sccpre.cat/mypng/full/403-4034315_fanculomyass-tokyo-ghoul-jail-ayato.png"
+    },
+
+    hpStat: {
+      current: 1450,
+      total: 1450,
+    },
+    attackStat: 170,
+      attacks: [
+        {
+        name:"strike",
+        dmg: this.attackStat * randomNum(2.14, 1.32),
+        uses: {
+            total: 30,
+            remaining: 30,
+        }
+    },
+
+    {
+        name:"leg sweep",
+        dmg: this.attackStat * randomNum(2.5, 1.6),
+        uses: {
+            total: 30,
+            remaining: 30,   
+    }
+    },
+    
+    {
+        name:"needle storm",
+        dmg: this.spAttackStat * randomNum(3.5, 3.2),
+        uses: {
+            total: 15,
+            remaining: 15,   
+    }
+    },
+    
+    
+    {
+        name:"rolling typhoon",
+        dmg: this.spAttackStat * randomNum(6.25, 4),
+        uses: {
+            total: 5,
+            remaining: 5,   
+    }
+    },
+      ],
+    defenseStat: 75,
+    spAttackStat: 274,
+    spDefenseStat: 70,
+    evadeStat: 85,
+},
+
+//Tooru stats
+{
+  name: "tooru",
+  alias: "mitsuki",
+  kaguneType: ["bikaku"],
+  countertype: [""],
+  img: {
+      default: "https://vignette.wikia.nocookie.net/tokyoghoul/images/b/bd/Ayato_anime_design_front_view.png/revision/latest/scale-to-width-down/300?cb=20150209220017",
+
+      kagune: "https://www.sccpre.cat/mypng/full/403-4034315_fanculomyass-tokyo-ghoul-jail-ayato.png"
+  },
+
+  hpStat: {
+    current: 1100,
+    total: 1100,
+  },
+  attackStat: 120,
+    attacks: [
+      {
+      name:"strike",
+      dmg: this.attackStat * randomNum(2.14, 1.32),
+      uses: {
+          total: 30,
+          remaining: 30,
+      }
+  },
+
+  {
+      name:"leg sweep",
+      dmg: this.attackStat * randomNum(2.5, 1.6),
+      uses: {
+          total: 30,
+          remaining: 30,   
+  }
+  },
+  
+  {
+      name:"knife toss",
+      dmg: this.spAttackStat * randomNum(3.5, 3.2),
+      uses: {
+          total: 15,
+          remaining: 15,   
+  }
+  },
+  
+  
+  {
+      name:"stinger dance",
+      dmg: this.spAttackStat * randomNum(6.25, 4),
+      uses: {
+          total: 5,
+          remaining: 5,   
+  }
+  },
+    ],
+  defenseStat: 375,
+  spAttackStat: 120,
+  spDefenseStat: 270,
+  evadeStat: 75,
+},
+
+
 ]}
+
