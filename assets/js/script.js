@@ -380,6 +380,12 @@ characters = [ //Start Characters
           // build my player
           fillChar($('.stadium .player'), 'player');
   
+          for(var i in gameData.player.attacks){
+            // populate attack list
+            $('.attack-list').append('<li><p class="attack-name"><strong>'+gameData.player.attacks[i].name+'</strong></p><p class="attack-count"><small><span>'+gameData.player.attacks[i].uses.remaining+'</span>/'+gameData.player.attacks[i].uses.total+'</small></p></li>');
+          }
+  
+          $('.attack-list').addClass('disabled');
   
           // update instructions
           $('.instructions p').text('Choose your enemy');
@@ -419,6 +425,7 @@ characters = [ //Start Characters
   
           // update step to attack phase and bind click events
           gameData.step = 3;
+          attackList();
           break;
       }
     });
@@ -436,9 +443,223 @@ characters = [ //Start Characters
       if(attacker === "enemy"){
         defender = "player";
       }
+
+      if(gameData[defender].kaguneType.indexOf(gameData[attacker].type) >= 0){
+        // counter exists
+        curAttack.defenseStat *= 2;
+      }
+    
+      if(gameData[defender].countertype.indexOf(gameData[attacker].type) >= 0){
+        // counter exists
+        curAttack.defenseStat /= 2;
+      }
+    
+      curAttack.defenseStat = Math.floor(curAttack.defenseStat);
+      return curAttack.defenseStat;
       
     }
 
+    function attackList(){
+      //Unlocks Attack Options
+      $('.attack-list').removeClass('disabled');
+    
+      $('.attack-list li').click(function(){
+        // attack choice is clicked
+        var doAttack = 1;
+    
+        if(gameData.step === 3){
+          // attack step - start attack sequence
+          attackEnemy($(this));
+        }
+      });
+    
+    }
+
+    function attackEnemy(that, callback){
+      attackName = that.children('.attack-name').children('strong').text().toLowerCase();
+    
+      for(var i in gameData.player.attacks){
+        if(gameData.player.attacks[i].name === attackName){
+          // get chosen attack data
+          curAttack = gameData.player.attacks[i];
+        }
+      }
+    
+      // if there are attacks left
+      if(curAttack.uses.remaining > 0){
+        // attack!!!
+        $('.attack-list').addClass('disabled');
+    
+        $('.player .char img').animate(
+          {
+            'margin-left': '-30px',
+            'margin-top': '10px'
+          },
+          50,
+          'swing'
+        );
+        $('.player .char img').animate(
+          {
+            'margin-left': '30px',
+            'margin-top': '-10px'
+          },
+          50,
+          'swing'
+        );
+        $('.player .char img').animate(
+          {
+            'margin-left': '0px',
+            'margin-top': '0px'
+          },
+          50,
+          'swing'
+        );
+    
+        // attack enemy
+        gameData.enemy.hpStat.current -= damangeCalc('player', curAttack);
+    
+        if(gameData.enemy.hpStat.current <= 0){
+          // Enemy is dead
+    
+          clearModal();
+        $('.modal-in header').append('<h1>You Enemy is slain</h1><span class="close">x</span>');
+        $('.modal-in section').append('<p>Congratulations! Dare you try again?');
+        $('.modal-out').slideDown('400');
+          modalControls();
+    
+          gameData.enemy.hpStat.current = 0;
+          // clear the stadium of the dead
+          $('.enemy').empty();
+          // show the available characters
+          $('.characters').removeClass('hidden');
+          $('.characters').children().slideDown('500');
+    
+          gameData.enemy = {};
+    
+          // choose enemy
+          gameData.step = 2;
+          // unbind click for reset
+          $('.attack-list li').unbind('click');
+        }else{
+          // enemy is still alive (Attack!!!)
+    
+          // subtract attack
+          curAttack.uses.remaining--;
+    
+          // interval to animate health bar
+          progressInt = setInterval(function(){
+            // get current value of health bar
+            var val = $('.stadium .enemy progress').val();
+            val--;
+    
+            // update health bar value
+            $('.stadium .enemy progress').val(val);
+    
+            if(val === gameData.enemy.hpStat.current){
+              // if you've hit your target clear interval
+              clearInterval(progressInt);
+              progressComplete = 1;
+            }
+          },1);
+    
+          // update health numbers
+          $('.stadium .enemy .data p span').text(gameData.enemy.hpStat.current);
+          that.children('.attack-count').children('small').children('span').text(curAttack.uses.remaining);
+    
+          // wait a second to recover
+          setTimeout(function(){
+            // now defend that attack
+            defend(that);
+          }, 1000);
+        }
+      }
+    }
+
+    function defend(that){
+      // random attack
+      randInt = randomNum(gameData.enemy.attacks.length);
+      enemyAttack = gameData.enemy.attacks[randInt];
+    
+      // enemy attack animation sequence
+      $('.enemy .char img').animate(
+        {
+          'margin-right': '-30px',
+          'margin-top': '-10px'
+        },
+        50,
+        'swing'
+      );
+      $('.enemy .char img').animate(
+        {
+          'margin-right': '30px',
+          'margin-top': '10px'
+        },
+        50,
+        'swing'
+      );
+      $('.enemy .char img').animate(
+        {
+          'margin-right': '0px',
+          'margin-top': '0px'
+        },
+        50,
+        'swing'
+      );
+    
+      // attack the player
+      gameData.player.hpStat.current -= damangeCalc('enemy', enemyAttack);
+    
+      if(gameData.player.hpStat.current <= 0){damangeCalc    
+        clearModal();
+        $('.modal-in header').append('<h1>Your player has died</h1><span class="close">x</span>');
+        $('.modal-in section').append('<p>You lose, good day!');
+        $('.modal-out').slideDown('400');
+        modalControls()
+    
+        gameData.player.hpStat.current = 0;
+    
+        resetGame();
+      }else{
+        // the player lives
+    
+        // subtract attack from enemy count
+        gameData.enemy.attacks[randInt].uses.remaining--;
+    
+        // health bar animation
+        defendProgressInt = setInterval(function(){
+          // get current val of health bar
+          var val = $('.stadium .player progress').val();
+          val--;
+    
+          // update health bar value
+          $('.stadium .player progress').val(val);
+    
+          if(val === gameData.player.hpStat.current){
+            // stop the interval when target is attained
+            clearInterval(defendProgressInt);
+            defendProgressComplete = 1;
+          }
+        },1);
+    
+        // update health value
+        $('.stadium .player .data p span').text(gameData.player.hpStat.current);
+    
+        setTimeout(function(){
+          if(defendProgressComplete && progressComplete){
+            $('.attack-list').removeClass('disabled');
+          }else{
+            setHP();
+            $('.attack-list').removeClass('disabled');
+          }
+        }, 500);
+      }
+    }
+    
+    
+
+
+    
+  //Reset Game
     function resetGame(){
       // set default values for game variables
       buildVars();

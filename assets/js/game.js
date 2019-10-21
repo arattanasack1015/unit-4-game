@@ -10,7 +10,7 @@
   // HP BAR ANIMATION
 // RESET
 // CHARACTER CHOICE
-// HERO ATTACK
+// player ATTACK
 // ENEMY ATTACK
 // ATTACK SEQUENCE
 // MODAL CONTROLS
@@ -57,7 +57,7 @@ function buildVars(){
   // the data for the game in play
   gameData = {
     step: 1,
-    hero: {},
+    player: {},
     enemy: {}
   }
 
@@ -356,9 +356,9 @@ function randomNum(max, min){
 function populateChar(container,character){
   // which img
   var facing = 'front';
-  if(character === 'hero'){
-    // we see the back of our hero
-    // a real hero faces danger
+  if(character === 'player'){
+    // we see the back of our player
+    // a real player faces danger
     facing = 'back';
   }
 
@@ -373,7 +373,7 @@ function populateChar(container,character){
 function attackMultiplier(attacker, curAttack){
   var defender = 'enemy';
   if(attacker === 'enemy'){
-    defender = 'hero';
+    defender = 'player';
   }
 
   if(gameData[defender].weakness.indexOf(gameData[attacker].type) >= 0){
@@ -421,7 +421,7 @@ function setHP(){
   clearInterval(defendProgressInt);
   clearInterval(progressInt);
   $('.stadium .enemy progress').val(gameData.enemy.hp.current);
-  $('.stadium .hero progress').val(gameData.hero.hp.current);
+  $('.stadium .player progress').val(gameData.player.hp.current);
 }
 
 
@@ -436,14 +436,14 @@ function resetGame(){
   buildVars();
 
   // clear the stadium
-  $('.hero').empty();
+  $('.player').empty();
   $('.enemy').empty();
 
   // reset
   $('.attack-list li').unbind('click');
   $('.attack-list').empty();
   $('.stadium .enemy').css({'padding':'0'});
-  $('.instructions p').text('Choose your hero');
+  $('.instructions p').text('Choose your player');
 
   // set & start the opening game music
   $('audio.music').attr('src',music["opening"]);
@@ -480,22 +480,22 @@ function characterChoice(){
       // switch for the current step in the game
 
       case 1:
-        // step 1: choose your hero
+        // step 1: choose your player
         for(var i in characters){
           if(characters[i].name === name){
-            // find and save your chosen hero's data
-            gameData.hero = characters[i];
+            // find and save your chosen player's data
+            gameData.player = characters[i];
           }
         }
 
         // remove the character from the available list
         var char = $(this).remove();
-        // build my hero
-        populateChar($('.stadium .hero'), 'hero');
+        // build my player
+        populateChar($('.stadium .player'), 'player');
 
-        for(var i in gameData.hero.attacks){
+        for(var i in gameData.player.attacks){
           // populate attack list
-          $('.attack-list').append('<li><p class="attack-name"><strong>'+gameData.hero.attacks[i].name+'</strong></p><p class="attack-count"><small><span>'+gameData.hero.attacks[i].avail.remaining+'</span>/'+gameData.hero.attacks[i].avail.total+'</small></p></li>');
+          $('.attack-list').append('<li><p class="attack-name"><strong>'+gameData.player.attacks[i].name+'</strong></p><p class="attack-count"><small><span>'+gameData.player.attacks[i].avail.remaining+'</span>/'+gameData.player.attacks[i].avail.total+'</small></p></li>');
         }
 
         $('.attack-list').addClass('disabled');
@@ -503,9 +503,9 @@ function characterChoice(){
         // update instructions
         $('.instructions p').text('Choose your enemy');
         // set health bar value
-        $('.stadium .hero progress').val(gameData.hero.hp.current);
+        $('.stadium .player progress').val(gameData.player.hp.current);
 
-        // let your hero roar
+        // let your player roar
         playSound(name);
 
         // move on to choosing an enemy
@@ -531,7 +531,7 @@ function characterChoice(){
         // update instructions
         $('.instructions p').text('Fight!!!');
 
-        // hide the hero list
+        // hide the player list
         $('.characters').children().slideUp('500', function(){
           $('.characters').addClass('hidden');
         });
@@ -555,7 +555,7 @@ function characterChoice(){
 
 
 /////////////////////////////////////////////
-// HERO ATTACK
+// player ATTACK
 /////////////////////////////////////////////
 function attackEnemy(that, callback){
   // attack the enemy!!!
@@ -563,10 +563,10 @@ function attackEnemy(that, callback){
   // name of your attack
   attackName = that.children('.attack-name').children('strong').text().toLowerCase();
 
-  for(var i in gameData.hero.attacks){
-    if(gameData.hero.attacks[i].name === attackName){
+  for(var i in gameData.player.attacks){
+    if(gameData.player.attacks[i].name === attackName){
       // get chosen attack data
-      curAttack = gameData.hero.attacks[i];
+      curAttack = gameData.player.attacks[i];
     }
   }
 
@@ -575,7 +575,7 @@ function attackEnemy(that, callback){
     // attack!!!
     $('.attack-list').addClass('disabled');
 
-    $('.hero .char img').animate(
+    $('.player .char img').animate(
       {
         'margin-left': '-30px',
         'margin-top': '10px'
@@ -583,7 +583,7 @@ function attackEnemy(that, callback){
       50,
       'swing'
     );
-    $('.hero .char img').animate(
+    $('.player .char img').animate(
       {
         'margin-left': '30px',
         'margin-top': '-10px'
@@ -591,7 +591,7 @@ function attackEnemy(that, callback){
       50,
       'swing'
     );
-    $('.hero .char img').animate(
+    $('.player .char img').animate(
       {
         'margin-left': '0px',
         'margin-top': '0px'
@@ -601,7 +601,7 @@ function attackEnemy(that, callback){
     );
 
     // attack enemy
-    gameData.enemy.hp.current -= attackMultiplier('hero', curAttack);
+    gameData.enemy.hp.current -= attackMultiplier('player', curAttack);
 
     if(gameData.enemy.hp.current <= 0){
       // Enemy is dead
@@ -698,23 +698,23 @@ function defend(that){
     'swing'
   );
 
-  // attack the hero
-  gameData.hero.hp.current -= attackMultiplier('enemy', enemyAttack);
+  // attack the player
+  gameData.player.hp.current -= attackMultiplier('enemy', enemyAttack);
 
-  if(gameData.hero.hp.current <= 0){
-    // ding dong the hero's dead
+  if(gameData.player.hp.current <= 0){
+    // ding dong the player's dead
 
     clearModal();
-    $('.modal-in header').append('<h1>Your Hero has died</h1><span class="close">x</span>');
+    $('.modal-in header').append('<h1>Your player has died</h1><span class="close">x</span>');
     $('.modal-in section').append('<p>You lose, good day!');
     $('.modal-out').slideDown('400');
     modalControls()
 
-    gameData.hero.hp.current = 0;
+    gameData.player.hp.current = 0;
 
     resetGame();
   }else{
-    // the hero lives
+    // the player lives
 
     // subtract attack from enemy count
     gameData.enemy.attacks[randInt].avail.remaining--;
@@ -722,13 +722,13 @@ function defend(that){
     // health bar animation
     defendProgressInt = setInterval(function(){
       // get current val of health bar
-      var val = $('.stadium .hero progress').val();
+      var val = $('.stadium .player progress').val();
       val--;
 
       // update health bar value
-      $('.stadium .hero progress').val(val);
+      $('.stadium .player progress').val(val);
 
-      if(val === gameData.hero.hp.current){
+      if(val === gameData.player.hp.current){
         // stop the interval when target is attained
         clearInterval(defendProgressInt);
         defendProgressComplete = 1;
@@ -736,7 +736,7 @@ function defend(that){
     },1);
 
     // update health value
-    $('.stadium .hero .data p span').text(gameData.hero.hp.current);
+    $('.stadium .player .data p span').text(gameData.player.hp.current);
 
     setTimeout(function(){
       if(defendProgressComplete && progressComplete){
