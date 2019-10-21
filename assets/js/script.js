@@ -1,6 +1,5 @@
 //Global Variables
 var 
-    typeSprite = '',
     types = [],
     gameData = {}
     attackName = '',
@@ -15,14 +14,14 @@ var
 
 //Characters
 function buildVars(){
-//phase of game
+//Phase of Game
 gameData = {
     step: 1,
-    hero: {},
+    player: {},
     enemy: {}
 }
 
-// action sequence
+//Battle Sequence Variables
   attackName = '';
   curAttack = {};
   randInt = 0;
@@ -33,7 +32,7 @@ gameData = {
   progressComplete = 0;
 
     
-characters = [
+characters = [ //Start Characters
 //Kaneki Stats
 {
     name: "kaneki",
@@ -291,9 +290,9 @@ characters = [
   kaguneType: ["bikaku"],
   countertype: [""],
   img: {
-      default: "https://vignette.wikia.nocookie.net/tokyoghoul/images/b/bd/Ayato_anime_design_front_view.png/revision/latest/scale-to-width-down/300?cb=20150209220017",
+      default: "https://vignette.wikia.nocookie.net/tokyoghoul/images/b/b9/Mutsuki_Re_anime_design_front_view.png/revision/latest/scale-to-width-down/300?cb=20180324211033",
 
-      kagune: "https://www.sccpre.cat/mypng/full/403-4034315_fanculomyass-tokyo-ghoul-jail-ayato.png"
+      kagune: "https://i.pinimg.com/originals/6b/c1/fe/6bc1fe84cc26e425e885ea06de1f98a2.png"
   },
 
   hpStat: {
@@ -344,7 +343,125 @@ characters = [
   spDefenseStat: 270,
   evadeStat: 75,
 },
+] //End Character
+}
 
+//Character staging
+  //Character selection
+  function fillChar(container, character) {
+    var idleStance = "default";
+    if(character === "player"){
+      idleStance = "kagune";
+    }
 
-]}
+    container.append('<section class="char"><img src="'+gameData[character].img[idleStance]+'" alt="'+gameData[character].name+'"><aside class="data"><h2>'+gameData[character].name+'</h2><div><progress max="'+gameData[character].hpStat.total+'"></progress><p><span>'+gameData[character].hpStat.current+'</span>/'+gameData[character].hpStat.total+'</p></div></aside></section>');
 
+  }
+
+  //Select Character
+  function characterChoice(){
+    $('.characters .char-container').click(function(){  
+      var name = $(this).children('h2').text().toLowerCase();
+  
+      switch(gameData.step){
+        // switch for the current step in the game
+  
+        case 1:
+          // step 1: choose your player
+          for(var i in characters){
+            if(characters[i].name === name){
+              // find and save your chosen player's data
+              gameData.player = characters[i];
+            }
+          }
+  
+          // remove the character from the available list
+          var char = $(this).remove();
+          // build my player
+          fillChar($('.stadium .player'), 'player');
+  
+  
+          // update instructions
+          $('.instructions p').text('Choose your enemy');
+          // set health bar value
+          $('.stadium .player progress').val(gameData.player.hpStat.current);
+  
+          // move on to choosing an enemy
+          gameData.step = 2;
+          break;
+  
+        case 2:
+          // step 2: choose your enemy
+          for(var i in characters){
+            if(characters[i].name === name){
+              // find and save the enemy data
+              gameData.enemy = characters[i];
+            }
+          }
+  
+          // remove the enemy from the list
+          var char = $(this).remove();
+          // build the enemy
+          fillChar($('.stadium .enemy'), 'enemy');
+          // pad the stadium - give them some breathing room
+          $('.stadium .enemy').css({'padding':'25px 0'});
+  
+          // update instructions
+          $('.instructions p').text('Fight!!!');
+  
+          // hide the player list
+          $('.characters').children().slideUp('500', function(){
+            $('.characters').addClass('hidden');
+          });
+  
+          // update enemy health bar value
+          $('.stadium .enemy progress').val(gameData.enemy.hpStat.current);
+  
+          // update step to attack phase and bind click events
+          gameData.step = 3;
+          break;
+      }
+    });
+  }
+  
+  //Battle Sequence
+    //Calculate the damage values
+    function randomNum(max, min){
+      // generate a random number
+      return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    function damangeCalc(attacker, curAttack) {
+      var defender = "enemy";
+      if(attacker === "enemy"){
+        defender = "player";
+      }
+      
+    }
+
+    function resetGame(){
+      // set default values for game variables
+      buildVars();
+    
+      // clear the stadium
+      $('.player').empty();
+      $('.enemy').empty();
+    
+      // reset
+      $('.attack-list li').unbind('click');
+      $('.attack-list').empty();
+      $('.stadium .enemy').css({'padding':'0'});
+      $('.instructions p').text('Choose your character');
+  
+      // empty characters
+      $('.characters').empty();
+      $('.characters').removeClass('hidden');
+    
+      for(var i in characters){
+        // build the character list
+        $(".characters").append('<div class="char-container"><img src="'+characters[i].img.default+'" alt="'+characters[i].name+'"><h2>'+characters[i].name+'</h2><span class="type '+characters[i].type+'"></span></div>')
+      }
+      characterChoice();
+    }
+    resetGame();
+    $('.logo').click(function(){resetGame();});
