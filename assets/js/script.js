@@ -1,6 +1,5 @@
 //Global Variables
-var 
-    types = [],
+let 
     gameData = {}
     attackName = '',
     curAttack = {},
@@ -34,7 +33,7 @@ gameData = {
     
 characters = [ //Start Characters
 //Kaneki Stats
-{
+  {
     name: 'kaneki',
     alias: 'eyepatch',
     kaguneType: ['rinkaku'],
@@ -54,7 +53,7 @@ characters = [ //Start Characters
         attacks: [
             {
                 name:'strike',
-                dmg: randomNum(2, 1),
+                damage: randomNum(2, 1),
                 uses: {
                     total: 30,
                     remaining: 30,
@@ -63,7 +62,7 @@ characters = [ //Start Characters
 
             {
                 name:'heavy slam',
-                dmg: randomNum(3, 2),
+                damage: randomNum(3, 2),
                 uses: {
                     total: 30,
                     remaining: 30,   
@@ -72,7 +71,7 @@ characters = [ //Start Characters
             
             {
                 name:'kagune barrage',
-                dmg: randomNum(4, 3),
+                damage: randomNum(4, 3),
                 uses: {
                     total: 15,
                     remaining: 15,   
@@ -82,7 +81,7 @@ characters = [ //Start Characters
             
             {
                 name:'flying slam',
-                dmg: randomNum(5, 3),
+                damage: randomNum(5, 3),
                 uses: {
                     total: 5,
                     remaining: 5,   
@@ -117,7 +116,7 @@ characters = [ //Start Characters
       attacks: [
         {
         name:'strike',
-        dmg: randomNum(2, 1),
+        damage: randomNum(2, 1),
         uses: {
             total: 30,
             remaining: 30,
@@ -126,7 +125,7 @@ characters = [ //Start Characters
 
     {
         name:'leg sweep',
-        dmg: randomNum(2, 1),
+        damage: randomNum(2, 1),
         uses: {
             total: 30,
             remaining: 30,   
@@ -135,7 +134,7 @@ characters = [ //Start Characters
     
     {
         name:'needle storm',
-        dmg: randomNum(4, 3),
+        damage: randomNum(4, 3),
         uses: {
             total: 15,
             remaining: 15,   
@@ -145,7 +144,7 @@ characters = [ //Start Characters
     
     {
         name:'rolling thunder',
-        dmg: randomNum(5, 4),
+        damage: randomNum(5, 4),
         uses: {
             total: 5,
             remaining: 5,   
@@ -179,7 +178,7 @@ characters = [ //Start Characters
         attacks: [
             {
                 name:'strike',
-                dmg: randomNum(2, 1),
+                damage: randomNum(2, 1),
                 uses: {
                     total: 30,
                     remaining: 30,
@@ -188,7 +187,7 @@ characters = [ //Start Characters
 
             {
                 name:'heavy slam',
-                dmg: randomNum(3, 2),
+                damage: randomNum(3, 2),
                 uses: {
                     total: 30,
                     remaining: 30,   
@@ -197,7 +196,7 @@ characters = [ //Start Characters
             
             {
                 name:'kagune grapple',
-                dmg: randomNum(4, 2),
+                damage: randomNum(4, 2),
                 uses: {
                     total: 15,
                     remaining: 15,   
@@ -207,7 +206,7 @@ characters = [ //Start Characters
             
             {
                 name:'mighty hammer',
-                dmg: randomNum(5, 3),
+                damage: randomNum(5, 3),
                 uses: {
                     total: 5,
                     remaining: 5,   
@@ -242,7 +241,7 @@ characters = [ //Start Characters
       attacks: [
         {
         name:'strike',
-        dmg: randomNum(2, 1),
+        damage: randomNum(2, 1),
         uses: {
             total: 30,
             remaining: 30,
@@ -251,7 +250,7 @@ characters = [ //Start Characters
 
     {
         name:'leg sweep',
-        dmg: randomNum(2, 1),
+        damage: randomNum(2, 1),
         uses: {
             total: 30,
             remaining: 30,   
@@ -260,7 +259,7 @@ characters = [ //Start Characters
     
     {
         name:'needle storm',
-        dmg: randomNum(4, 3),
+        damage: randomNum(4, 3),
         uses: {
             total: 15,
             remaining: 15,   
@@ -270,7 +269,7 @@ characters = [ //Start Characters
     
     {
         name:'rolling typhoon',
-        dmg: randomNum(6, 4),
+        damage: randomNum(6, 4),
         uses: {
             total: 5,
             remaining: 5,   
@@ -303,7 +302,7 @@ characters = [ //Start Characters
     attacks: [
       {
       name:'strike',
-      dmg: randomNum(2, 1),
+      damage: randomNum(2, 1),
       uses: {
           total: 30,
           remaining: 30,
@@ -312,7 +311,7 @@ characters = [ //Start Characters
 
   {
       name:'leg sweep',
-      dmg: randomNum(2, 1),
+      damage: randomNum(2, 1),
       uses: {
           total: 30,
           remaining: 30,   
@@ -321,7 +320,7 @@ characters = [ //Start Characters
   
   {
       name:'knife toss',
-      dmg: randomNum(3, 2),
+      damage: randomNum(3, 2),
       uses: {
           total: 15,
           remaining: 15,   
@@ -331,7 +330,7 @@ characters = [ //Start Characters
   
   {
       name:'stinger dance',
-      dmg: randomNum(6, 4),
+      damage: randomNum(6, 4),
       uses: {
           total: 5,
           remaining: 5,   
@@ -346,6 +345,9 @@ characters = [ //Start Characters
 ] //End Character
 }
 
+function randomNum(max, min){
+  return Math.floor(Math.random() * (max - min) + min);
+} 
 //Character staging
   //Character selection
   function fillChar(container, character) {
@@ -357,6 +359,59 @@ characters = [ //Start Characters
     container.append('<section class="char"><img src="'+gameData[character].img[idleStance]+'" alt="'+gameData[character].name+'"><aside class="data"><h2>'+gameData[character].name+'</h2><div><progress max="'+gameData[character].hpStat.total+'"></progress><p><span>'+gameData[character].hpStat.current+'</span>/'+gameData[character].hpStat.total+'</p></div></aside></section>');
 
   }
+
+  function damageCalc(attacker, curAttack){
+    let defender = 'enemy';
+    if(attacker === 'enemy'){
+      defender = 'player'
+    }
+
+    if(gameData.enemy.countertype.indexOf(gameData.player.kaguneType) >= 0){
+      curAttack["damage"] *= 2
+    }
+
+    if(gameData.enemy.countertype.indexOf(gameData.player.kaguneType) <= 0){
+      curAttack["damage"] /= 2
+    }
+    curAttack.damage = Math.floor(curAttack.damage * gameData.player.attackStat) ;
+    return curAttack["damage"];
+  }
+
+  function setHP(){
+    // stop health animation and set value
+    clearInterval(defendProgressInt);
+    clearInterval(progressInt);
+    $('.stadium .enemy progress').val(gameData.enemy.hpStat.current);
+    $('.stadium .player progress').val(gameData.player.hpStat.current);
+  }
+
+    //Reset Game
+    function resetGame(){
+      // set default values for game variables
+      buildVars();
+    
+      // clear the stadium
+      $('.player').empty();
+      $('.enemy').empty();
+    
+      // reset
+      $('.attack-list li').unbind('click');
+      $('.attack-list').empty();
+      $('.stadium .enemy').css({'padding':'0'});
+      $('.instructions p').text('Choose your character');
+  
+      // empty characters
+      $('.characters').empty();
+      $('.characters').removeClass('hidden');
+    
+      for(var i in characters){
+        // build the character list
+        $(".characters").append('<div class="char-container"><img src="'+characters[i].img.default+'" alt="'+characters[i].name+'"><h2>'+characters[i].name+'</h2><span class="type '+characters[i].type+'"></span></div>')
+      }
+      characterChoice();
+    }
+    resetGame();
+    $('.logo').click(function(){resetGame();});
 
   //Select Character
   function characterChoice(){
@@ -431,31 +486,6 @@ characters = [ //Start Characters
     });
   }
 
-  
-  function randomNum(max, min){
-    return Math.floor(Math.random() * (max - min) + min);
-  }
-  
-
-  function damageCalc(attacker, curAttack){
-    let defender = 'enemy';
-    if(attacker === 'enemy'){
-      defender = 'player'
-    }
-
-    curAttack.dmg = Math.floor(curAttack.dmg);
-    return curAttack.dmg;
-  }
-
-  function setHP(){
-    // stop health animation and set value
-    clearInterval(defendProgressInt);
-    clearInterval(progressInt);
-    $('.stadium .enemy progress').val(gameData.enemy.hpStat.current);
-    $('.stadium .player progress').val(gameData.player.hpStat.current);
-  }
-
-
   function attackEnemy(that, callback){
     
     //stores attack name
@@ -470,7 +500,7 @@ characters = [ //Start Characters
     if(curAttack.uses.remaining > 0){
       //execute attack
       $('.attack-list').addClass('disabled');
-      gameData.enemy.hpStat.current -= damageCalc('player', curAttack);
+      gameData.enemy.hpStat.current -= damageCalc(gameData.player, curAttack);
 
       if(gameData.enemy.hpStat.current <= 0){
         gameData.enemy.hp.current = 0;
@@ -514,9 +544,10 @@ characters = [ //Start Characters
         setTimeout(function(){
           // now defend that attack
           defend(that);
-        }, 1000);
+        }, 500);
       }
   }
+
   }
 
   function defend(that){
@@ -549,7 +580,6 @@ characters = [ //Start Characters
       'swing'
     );
   
-
     //subtracts player hpStat
     gameData.player.hpStat.current -= damageCalc('enemy', enemyAttack);
 
@@ -558,7 +588,9 @@ characters = [ //Start Characters
       gameData.player.hpStat.current = 0;
       resetGame();
     }else{
-  
+      
+      gameData.enemy.attacks[randInt].uses.remaining--;
+
       // health bar animation
       defendProgressInt = setInterval(function(){
         // get current val of health bar
@@ -604,31 +636,3 @@ characters = [ //Start Characters
     });
   
   }
-    
-  //Reset Game
-    function resetGame(){
-      // set default values for game variables
-      buildVars();
-    
-      // clear the stadium
-      $('.player').empty();
-      $('.enemy').empty();
-    
-      // reset
-      $('.attack-list li').unbind('click');
-      $('.attack-list').empty();
-      $('.stadium .enemy').css({'padding':'0'});
-      $('.instructions p').text('Choose your character');
-  
-      // empty characters
-      $('.characters').empty();
-      $('.characters').removeClass('hidden');
-    
-      for(var i in characters){
-        // build the character list
-        $(".characters").append('<div class="char-container"><img src="'+characters[i].img.default+'" alt="'+characters[i].name+'"><h2>'+characters[i].name+'</h2><span class="type '+characters[i].type+'"></span></div>')
-      }
-      characterChoice();
-    }
-    resetGame();
-    $('.logo').click(function(){resetGame();});
