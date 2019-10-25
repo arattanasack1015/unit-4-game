@@ -361,7 +361,7 @@ function randomNum(max, min){
   }
 
   function damageCalc(attacker, curAttack){
-    let defender = 'enemy';
+    var defender = 'enemy';
     if(attacker === 'enemy'){
       defender = 'player'
     }
@@ -373,7 +373,7 @@ function randomNum(max, min){
     if(gameData.enemy.countertype.indexOf(gameData.player.kaguneType) <= 0){
       curAttack["damage"] /= 2
     }
-    curAttack.damage = Math.floor(curAttack.damage * gameData.player.attackStat) ;
+    curAttack.damage = Math.floor(curAttack.damage * 100) ;
     return curAttack["damage"];
   }
 
@@ -501,9 +501,10 @@ function randomNum(max, min){
       //execute attack
       $('.attack-list').addClass('disabled');
       gameData.enemy.hpStat.current -= damageCalc(gameData.player, curAttack);
+      console.log(curAttack);
 
       if(gameData.enemy.hpStat.current <= 0){
-        gameData.enemy.hp.current = 0;
+        gameData.enemy.hpStat.current = 0;
         // clear the stadium of the dead
         $('.enemy').empty();
         // show the available characters
@@ -516,6 +517,7 @@ function randomNum(max, min){
         gameData.step = 2;
         // unbind click for reset
         $('.attack-list li').unbind('click');
+        resetGame();
       } else{
   
         curAttack.uses.remaining--;
@@ -552,8 +554,10 @@ function randomNum(max, min){
 
   function defend(that){
     //decides enemy attack rng
-    randInt = randomNum(gameData.enemy.attacks.length);
+    randInt = randomNum(gameData.enemy.attacks.length, 0);
+    console.log("randInt", randInt)
     enemyAttack = gameData.enemy.attacks[randInt];
+    console.log("enemyAttack", enemyAttack)
 
     $('.enemy .char img').animate(
       {
@@ -584,6 +588,12 @@ function randomNum(max, min){
     gameData.player.hpStat.current -= damageCalc('enemy', enemyAttack);
 
     if(gameData.player.hpStat.current <= 0){
+
+      clearModal();
+      $('.modal-in header').append('<h1>Your Hero has died</h1><span class="close">x</span>');
+      $('.modal-in section').append('<p>You lose, good day!');
+      $('.modal-out').slideDown('400');
+      modalControls()
 
       gameData.player.hpStat.current = 0;
       resetGame();
@@ -635,4 +645,25 @@ function randomNum(max, min){
       }
     });
   
+  }
+
+  function modalControls(){
+    $('.modal-out').click(function(){
+      $(this).slideUp('400');
+    });
+    $('.modal-in .close').click(function(e){
+      $('.modal-out').slideUp('400');
+    });
+  
+    $('.modal-in').click(function(e){
+      e.stopPropagation();
+      e.preventDefault();
+    });
+  }
+  
+  function clearModal(){
+    $('.modal-in header').empty();
+    $('.modal-in section').empty();
+    $('.modal-in footer').empty();
+    setHP();
   }
