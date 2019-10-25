@@ -382,7 +382,6 @@ function randomNum(max, min){
     }
     // curAttack.damage = Math.floor(curAttack.damage * 100) ;
     damage = Math.floor(damage * gameData.player.attackStat);
-    console.log(damage);
     return damage;
     // return curAttack["damage"];
   }
@@ -511,9 +510,6 @@ function randomNum(max, min){
       //execute attack
       $('.attack-list').addClass('disabled');
       gameData.enemy.hpStat.current -= damageCalc(gameData.player, curAttack);
-      console.log(curAttack);
-      console.log(gameData.enemy.hpStat.total, "hp total");
-
       if(gameData.enemy.hpStat.current <= 0){
         gameData.enemy.hpStat.current = 0;
         // clear the stadium of the dead
@@ -568,9 +564,7 @@ function randomNum(max, min){
   function defend(that){
     //decides enemy attack rng
     randInt = randomNum(gameData.enemy.attacks.length, 0);
-    console.log("randInt", randInt)
     enemyAttack = gameData.enemy.attacks[randInt];
-    console.log("enemyAttack", enemyAttack)
 
     $('.enemy .char img').animate(
       {
