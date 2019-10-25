@@ -67,7 +67,7 @@ strong {
     box-sizing: border-box;
 }
 .stadium > section .char {
-    height: 175px;
+    height: 350px;
     position: relative;
 }
 .stadium > section .char > * {
@@ -75,7 +75,7 @@ strong {
     text-transform: capitalize;
 }
 .stadium > section .char img {
-    height: 150px;
+    height: 300px;
 }
 .stadium > section .char .data {
     background: #ccc;

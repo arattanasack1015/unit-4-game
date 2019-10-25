@@ -55,7 +55,7 @@ characters = [ //Start Characters
         total: 1400
     },
 
-    attackStat: 180,
+    attackStat: 240,
         attacks: [
             {
                 name:'strike',
@@ -118,7 +118,7 @@ characters = [ //Start Characters
       current: 1200,
       total: 1200,
     },
-    attackStat: 150,
+    attackStat: 180,
       attacks: [
         {
         name:'strike',
@@ -243,7 +243,7 @@ characters = [ //Start Characters
       current: 1450,
       total: 1450,
     },
-    attackStat: 170,
+    attackStat: 215,
       attacks: [
         {
         name:'strike',
@@ -304,7 +304,7 @@ characters = [ //Start Characters
     current: 1100,
     total: 1100,
   },
-  attackStat: 120,
+  attackStat: 140,
     attacks: [
       {
       name:'strike',
@@ -520,6 +520,7 @@ function randomNum(max, min){
         
 
         devour();
+        alert("You won and gained a bonus to your attack!");
         gameData.enemy = {};
         
         // choose enemy
@@ -596,11 +597,7 @@ function randomNum(max, min){
 
     if(gameData.player.hpStat.current <= 0){
 
-      clearModal();
-      $('.modal-in header').append('<h1>Your Hero has died</h1><span class="close">x</span>');
-      $('.modal-in section').append('<p>You lose, good day!');
-      $('.modal-out').slideDown('400');
-      modalControls()
+      alert("You've been defeated.");
 
       gameData.player.hpStat.current = 0;
       resetGame();
@@ -655,10 +652,12 @@ function randomNum(max, min){
   }
 
   function devour() {
-    gameData.player.hpStat.current += Math.floor(gameData.enemy.hpStat.total * 0.75);
-    gameData.player.hpStat.total = gameData.player.hpStat.current;
+    // gameData.player.hpStat.current += Math.floor(gameData.enemy.hpStat.total * 0.65);
+    let attackGain = 0
+    gameData.player.hpStat.current = gameData.player.hpStat.total;
     gameData.player.attackStat += Math.floor(gameData.enemy.attackStat / 2);
+    attackGain = Math.floor(gameData.enemy.attackStat / 2);
     $('.stadium .player p span').text(gameData.player.hpStat.total);
-    $('.stadium .player .data p span').text(gameData.player.hpStat.current);
     $('.stadium .player progress').val(gameData.player.hpStat.current);
+
   }
