@@ -11,8 +11,14 @@ let
     progressInt = null,
     progressComplete = 0;
 
+
+    
 //Characters
 function buildVars(){
+
+
+  
+
 //Phase of Game
 gameData = {
     step: 1,
@@ -362,19 +368,23 @@ function randomNum(max, min){
 
   function damageCalc(attacker, curAttack){
     var defender = 'enemy';
+    var damage = 0;
     if(attacker === 'enemy'){
       defender = 'player'
     }
 
     if(gameData.enemy.countertype.indexOf(gameData.player.kaguneType) >= 0){
-      curAttack["damage"] *= 2
+      damage = curAttack["damage"] * 2
     }
 
-    if(gameData.enemy.countertype.indexOf(gameData.player.kaguneType) <= 0){
-      curAttack["damage"] /= 2
+    else if(gameData.enemy.countertype.indexOf(gameData.player.kaguneType) < 0){
+      damage = curAttack["damage"] / 2
     }
-    curAttack.damage = Math.floor(curAttack.damage * 100) ;
-    return curAttack["damage"];
+    // curAttack.damage = Math.floor(curAttack.damage * 100) ;
+    damage = Math.floor(damage * gameData.player.attackStat);
+    console.log(damage);
+    return damage;
+    // return curAttack["damage"];
   }
 
   function setHP(){
@@ -502,6 +512,7 @@ function randomNum(max, min){
       $('.attack-list').addClass('disabled');
       gameData.enemy.hpStat.current -= damageCalc(gameData.player, curAttack);
       console.log(curAttack);
+      console.log(gameData.enemy.hpStat.total, "hp total");
 
       if(gameData.enemy.hpStat.current <= 0){
         gameData.enemy.hpStat.current = 0;
@@ -510,14 +521,16 @@ function randomNum(max, min){
         // show the available characters
         $('.characters').removeClass('hidden');
         $('.characters').children().slideDown('500');
-  
+        
+
+        devour();
         gameData.enemy = {};
-  
+        
         // choose enemy
         gameData.step = 2;
         // unbind click for reset
         $('.attack-list li').unbind('click');
-        resetGame();
+        ;
       } else{
   
         curAttack.uses.remaining--;
@@ -647,23 +660,11 @@ function randomNum(max, min){
   
   }
 
-  function modalControls(){
-    $('.modal-out').click(function(){
-      $(this).slideUp('400');
-    });
-    $('.modal-in .close').click(function(e){
-      $('.modal-out').slideUp('400');
-    });
-  
-    $('.modal-in').click(function(e){
-      e.stopPropagation();
-      e.preventDefault();
-    });
-  }
-  
-  function clearModal(){
-    $('.modal-in header').empty();
-    $('.modal-in section').empty();
-    $('.modal-in footer').empty();
-    setHP();
+  function devour() {
+    gameData.player.hpStat.current += Math.floor(gameData.enemy.hpStat.total * 0.75);
+    gameData.player.hpStat.total = gameData.player.hpStat.current;
+    gameData.player.attackStat += Math.floor(gameData.enemy.attackStat / 2);
+    $('.stadium .player p span').text(gameData.player.hpStat.total);
+    $('.stadium .player .data p span').text(gameData.player.hpStat.current);
+    $('.stadium .player progress').val(gameData.player.hpStat.current);
   }
